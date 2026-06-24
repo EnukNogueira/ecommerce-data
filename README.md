@@ -2,7 +2,7 @@
 
 Este projeto foi desenvolvido com o objetivo de simular um cenário real de engenharia e análise de dados em grandes empresas do mercado (estilo Itaú, Nubank, Ambev e Mercado Livre). O foco principal foi investigar a evasão de clientes (churn) e o comportamento de engajamento utilizando a biblioteca **Pandas** e otimizações com **NumPy**.
 
-## 🛠️ Tecnologias e Conceitos Aplicados
+##  Tecnologias e Conceitos Aplicados
 * **Python** (Lógica de Programação e Estruturas de Dados)
 * **Pandas** (DataFrames, Merges, Máscaras Booleanas, GroupBy Avançado e Vetorização)
 * **NumPy** (Lógica Condicional de Alta Performance com `np.select`)
