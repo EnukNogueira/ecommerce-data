@@ -1,57 +1,90 @@
-#  E-commerce Customer Churn & Engagement Analysis
+# E-commerce Customer Churn & Engagement Analysis
 
-Este projeto foi desenvolvido com o objetivo de simular um cenário real de engenharia e análise de dados em grandes empresas do mercado (estilo Itaú, Nubank, Ambev e Mercado Livre). O foco principal foi investigar a evasão de clientes (churn) e o comportamento de engajamento utilizando a biblioteca **Pandas** e otimizações com **NumPy**.
-
-##  Tecnologias e Conceitos Aplicados
-* **Python** (Lógica de Programação e Estruturas de Dados)
-* **Pandas** (DataFrames, Merges, Máscaras Booleanas, GroupBy Avançado e Vetorização)
-* **NumPy** (Lógica Condicional de Alta Performance com `np.select`)
-* **Jupyter Notebook** (Ambiente de Desenvolvimento)
+Análise de dados em Python com Pandas e NumPy para investigar evasão de clientes (churn) e padrões de engajamento em uma base de e-commerce.
 
 ---
 
-##  Etapas de Desenvolvimento do Projeto
+## Sobre o projeto
 
-### 1. Consolidação dos Dados (Silos de Dados)
-Na vida real, os dados raramente vêm prontos em uma única tabela. Neste projeto, as características dos clientes (`ecommerce_customer_features.csv`) estavam separadas do status de churn (`ecommerce_customer_targets.csv`). A primeira etapa foi unificar essas fontes utilizando a chave exclusiva `Customer_ID`.
-
-### 2. Segmentação Crítica de Churn
-Para apoiar o time de Marketing, criamos um filtro avançado (máscara booleana) para isolar de forma cirúrgica o grupo de altíssimo risco. Isolamos **448 clientes** que atendiam cumulativamente aos critérios:
-* Já estavam em Churn (`churned == 'Yes'`)
-* Estavam há mais de 30 dias sem comprar (`days_since_last_purchase > 30`)
-* Tinham menos de 3 pedidos feitos no total (`total_orders < 3`)
-* **Métrica extraída:** O valor médio de pedido (`avg_order_value`) desse grupo crítico foi de **R$ 79,55**.
-
-### 3. Diagnóstico Temático de Engajamento
-Utilizando agrupamento multinível (`groupby`), cruzamos o status de fidelidade (`loyalty_member`) com o volume de chamados no suporte (`customer_support_tickets`). Descobrimos que os clientes que mais abandonam o carrinho (média de **51%**) são aqueles que **não** são membros do programa de fidelidade e possuem um alto índice de atrito no suporte (4 ou 5 tickets abertos).
-
-### 4. Feature Engineering (Engenharia de Atributos)
-Para municiar o time de CRM em campanhas de reengajamento, criamos uma nova coluna de classificação chamada `Perfil_do_Cliente` de forma 100% vetorizada (sem loops lentos), distribuindo a base em:
-* **Clientes_Rotativos (Regular):** 4.495 clientes
-* **Contas_Inativas (Veterano Inativo):** 1.183 clientes
-* **Clientes_Novos (Novato Engajado):** 322 clientes
+Este projeto simula um cenário real de análise de dados em empresas de grande porte. A base de dados contém informações de clientes divididas em dois arquivos separados, replicando a realidade de sistemas com silos de dados. O objetivo foi unificar essas fontes, extrair métricas de churn e engajamento, e gerar segmentações acionáveis para times de Marketing e CRM.
 
 ---
 
-##  Desafios Enfrentados e Aprendizados (Como Solucionei)
+## Tecnologias utilizadas
 
-Durante o desenvolvimento supervisionado pelo Tech Lead, encarei alguns desvios de sintaxe e lógica comuns no início da carreira, mas que foram fundamentais para consolidar o aprendizado:
-
-###  Erro de Case-Sensitivity no Merge (`KeyError`)
-* **O Problema:** Ao tentar juntar as tabelas usando `on='customer_id'`, o Python retornou um erro porque as colunas no CSV original estavam com letras maiúsculas (`Customer_ID`).
-* **A Solução:** Aprendi que o Pandas é estritamente *case-sensitive*. Ajustei a string para bater exatamente com o cabeçalho físico do arquivo.
-
-###  Filtros Incompletos e Falta de Parênteses
-* **O Problema:** Na hora de construir a máscara booleana com múltiplas condições, tentei passar apenas o nome da coluna solto entre aspas (ex: `'days_since_last_purchase' > 30`), o que gerou um erro de tipo (`TypeError`).
-* **A Solução:** Entendi o conceito de que o Pandas precisa saber explicitamente de qual DataFrame aquela coluna está vindo (`df_uni['coluna']`). Além disso, fixei a regra de ouro de que **cada condição precisa estar isolada entre parênteses `()`** e unida pelo operador bitwise `&` para que a precedência de execução do Python não quebre o pipeline.
-
-###  Confusão entre Agrupamento e Métrica
-* **O Problema:** No primeiro desenho do `groupby`, misturei colunas de métricas decimais contínuas (como `engagement_score`) dentro do agrupador, o que geraria milhares de linhas desnecessárias.
-* **A Solução:** Compreendi a analogia das "caixas e gavetas". O `groupby` deve receber as variáveis categóricas (as etiquetas das gavetas), enquanto o método `.agg()` recebe um dicionário especificando quais operações matemáticas (como `'mean'` ou `'count'`) faremos com os números guardados ali dentro.
-
-###  Substituição de Loops por Otimização NumPy
-* **O Problema:** Para criar colunas condicionais, a primeira tendência de um desenvolvedor iniciante é criar funções com `if/elif` e usar o método `.apply(axis=1)`.
-* **A Solução:** Fui orientado a pensar em performance para produção. O `.apply()` linha a linha funciona como um loop disfarçado e é extremamente lento em bases massivas. Solucionei o problema implementando o **`np.select()`**, que cria listas de condições e etiquetas na memória e processa a base inteira de uma única vez (vetorização nativa).
+- **Python 3**
+- **Pandas** — DataFrames, merges, máscaras booleanas, GroupBy avançado e vetorização
+- **NumPy** — lógica condicional de alta performance com `np.select`
+- **Jupyter Notebook** — ambiente de desenvolvimento e documentação
 
 ---
-*Projeto desenvolvido por Enuk para fins de estudo e preparação para o mercado de Engenharia e Análise de Dados.*
+
+## Estrutura dos dados
+
+| Arquivo | Conteúdo |
+|---|---|
+| `ecommerce_customer_features.csv` | Características dos clientes (comportamento, frequência, valor de pedido) |
+| `ecommerce_customer_targets.csv` | Status de churn por cliente |
+
+A chave de junção entre os dois arquivos é `Customer_ID`.
+
+---
+
+## Etapas da análise
+
+### 1. Consolidação dos dados
+Unificação das duas fontes usando `pd.merge()` pela chave `Customer_ID`, replicando a integração de silos de dados comum em ambientes corporativos.
+
+### 2. Segmentação crítica de churn
+Isolamento de 448 clientes de altíssimo risco via máscara booleana com três critérios cumulativos: já em churn, mais de 30 dias sem compra e menos de 3 pedidos no total. O valor médio de pedido desse grupo foi de **R$ 79,55**.
+
+### 3. Diagnóstico de engajamento
+Agrupamento multinível (`groupby`) cruzando status de fidelidade com volume de tickets de suporte. Descoberta: clientes não-fidelizados com 4 ou 5 tickets abertos têm média de abandono de carrinho de **51%**.
+
+### 4. Feature Engineering
+Criação da coluna `Perfil_do_Cliente` de forma 100% vetorizada com `np.select`, classificando a base em:
+
+| Segmento | Clientes |
+|---|---|
+| Clientes Rotativos (Regular) | 4.495 |
+| Contas Inativas (Veterano Inativo) | 1.183 |
+| Clientes Novos (Novato Engajado) | 322 |
+
+---
+
+## Aprendizados técnicos documentados
+
+Durante o desenvolvimento, foram identificados e corrigidos erros comuns de quem está começando com Pandas:
+
+**Case-sensitivity no merge** — colunas no CSV estavam com `Customer_ID` (maiúsculo), não `customer_id`. Pandas é estritamente case-sensitive.
+
+**Máscaras booleanas com múltiplas condições** — cada condição precisa estar entre parênteses `()` e unida pelo operador bitwise `&`, não pelo `and` do Python nativo.
+
+**GroupBy com variáveis erradas** — colunas contínuas (como `engagement_score`) não pertencem ao agrupador; pertencem ao `.agg()`. O `groupby` recebe apenas variáveis categóricas.
+
+**`.apply()` vs vetorização** — `.apply(axis=1)` é um loop disfarçado e lento em bases grandes. `np.select()` processa a base inteira de uma vez na memória.
+
+---
+
+## Como executar
+
+```bash
+# Clone o repositório
+git clone https://github.com/EnukNogueira/ecommerce-data.git
+cd ecommerce-data
+
+# Instale as dependências
+pip install pandas numpy jupyter
+
+# Abra o notebook
+jupyter notebook ecommerce.ipynb
+```
+
+---
+
+## Autor
+
+**Enuk Nogueira** — Desenvolvedor focado em Engenharia de Dados e Automação de Processos
+
+[![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/enuknogueira/)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/EnukNogueira)
