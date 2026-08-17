@@ -1,90 +1,96 @@
 # E-commerce Customer Churn & Engagement Analysis
 
-Análise de dados em Python com Pandas e NumPy para investigar evasão de clientes (churn) e padrões de engajamento em uma base de e-commerce.
+Exercício de análise de dados em Python utilizando Pandas e NumPy para analisar comportamento de clientes, churn e engajamento em uma base de e-commerce.
 
 ---
 
 ## Sobre o projeto
 
-Este projeto simula um cenário real de análise de dados em empresas de grande porte. A base de dados contém informações de clientes divididas em dois arquivos separados, replicando a realidade de sistemas com silos de dados. O objetivo foi unificar essas fontes, extrair métricas de churn e engajamento, e gerar segmentações acionáveis para times de Marketing e CRM.
+O projeto utiliza duas bases de dados com informações de clientes.
+
+A primeira contém características relacionadas ao comportamento de compra e a segunda contém informações sobre churn.
+
+O objetivo foi praticar manipulação e análise de dados utilizando Pandas, além de aplicar algumas técnicas de segmentação com NumPy.
 
 ---
 
 ## Tecnologias utilizadas
 
 - **Python 3**
-- **Pandas** — DataFrames, merges, máscaras booleanas, GroupBy avançado e vetorização
-- **NumPy** — lógica condicional de alta performance com `np.select`
-- **Jupyter Notebook** — ambiente de desenvolvimento e documentação
+- **Pandas** — manipulação e análise dos dados
+- **NumPy** — operações e criação de classificações
+- **Jupyter Notebook** — desenvolvimento dos exercícios
 
 ---
 
-## Estrutura dos dados
+## Estrutura do projeto
 
-| Arquivo | Conteúdo |
-|---|---|
-| `ecommerce_customer_features.csv` | Características dos clientes (comportamento, frequência, valor de pedido) |
-| `ecommerce_customer_targets.csv` | Status de churn por cliente |
-
-A chave de junção entre os dois arquivos é `Customer_ID`.
+- `ecommerce_customer_features.csv` — dados de características dos clientes
+- `ecommerce_customer_targets.csv` — informações de churn
+- `ecommerce.ipynb` — notebook com os exercícios e análises
+- `README.md` — documentação do projeto
 
 ---
 
-## Etapas da análise
+## O que foi praticado
 
-### 1. Consolidação dos dados
-Unificação das duas fontes usando `pd.merge()` pela chave `Customer_ID`, replicando a integração de silos de dados comum em ambientes corporativos.
-
-### 2. Segmentação crítica de churn
-Isolamento de 448 clientes de altíssimo risco via máscara booleana com três critérios cumulativos: já em churn, mais de 30 dias sem compra e menos de 3 pedidos no total. O valor médio de pedido desse grupo foi de **R$ 79,55**.
-
-### 3. Diagnóstico de engajamento
-Agrupamento multinível (`groupby`) cruzando status de fidelidade com volume de tickets de suporte. Descoberta: clientes não-fidelizados com 4 ou 5 tickets abertos têm média de abandono de carrinho de **51%**.
-
-### 4. Feature Engineering
-Criação da coluna `Perfil_do_Cliente` de forma 100% vetorizada com `np.select`, classificando a base em:
-
-| Segmento | Clientes |
-|---|---|
-| Clientes Rotativos (Regular) | 4.495 |
-| Contas Inativas (Veterano Inativo) | 1.183 |
-| Clientes Novos (Novato Engajado) | 322 |
+- [x] Leitura de arquivos CSV
+- [x] Manipulação de DataFrames
+- [x] `merge()` para combinar diferentes bases
+- [x] Filtros com máscaras booleanas
+- [x] `groupby()` e agregações
+- [x] Análise de churn
+- [x] Análise de comportamento dos clientes
+- [x] Criação de classificações com `np.select()`
+- [x] Operações vetorizadas
 
 ---
 
-## Aprendizados técnicos documentados
+## Análises realizadas
 
-Durante o desenvolvimento, foram identificados e corrigidos erros comuns de quem está começando com Pandas:
+Durante os exercícios foram analisados:
 
-**Case-sensitivity no merge** — colunas no CSV estavam com `Customer_ID` (maiúsculo), não `customer_id`. Pandas é estritamente case-sensitive.
+- Clientes em situação de churn
+- Tempo desde a última compra
+- Quantidade de pedidos realizados
+- Valor médio dos pedidos
+- Relação entre fidelidade e tickets de suporte
+- Abandono de carrinho
+- Segmentação dos clientes por comportamento
 
-**Máscaras booleanas com múltiplas condições** — cada condição precisa estar entre parênteses `()` e unida pelo operador bitwise `&`, não pelo `and` do Python nativo.
+---
 
-**GroupBy com variáveis erradas** — colunas contínuas (como `engagement_score`) não pertencem ao agrupador; pertencem ao `.agg()`. O `groupby` recebe apenas variáveis categóricas.
+## Principais resultados
 
-**`.apply()` vs vetorização** — `.apply(axis=1)` é um loop disfarçado e lento em bases grandes. `np.select()` processa a base inteira de uma vez na memória.
+Foi identificado um grupo de **448 clientes** que atendia simultaneamente aos critérios de churn, mais de 30 dias sem compra e menos de 3 pedidos realizados.
+
+Também foi analisada a relação entre fidelidade e tickets de suporte, além da criação de uma classificação de clientes baseada em seu comportamento.
 
 ---
 
 ## Como executar
 
 ```bash
-# Clone o repositório
 git clone https://github.com/EnukNogueira/ecommerce-data.git
 cd ecommerce-data
-
-# Instale as dependências
 pip install pandas numpy jupyter
-
-# Abra o notebook
 jupyter notebook ecommerce.ipynb
 ```
 
 ---
 
+## Objetivo do estudo
+
+Este projeto faz parte dos meus estudos de Análise de Dados e foi desenvolvido para praticar operações fundamentais de Pandas e NumPy utilizando uma base de e-commerce.
+
+---
+
 ## Autor
 
-**Enuk Nogueira** — Desenvolvedor focado em Engenharia de Dados e Automação de Processos
+**Enuk Nogueira**
+
+Estudante de Análise e Desenvolvimento de Sistemas pela PUCPR, com foco em Análise de Dados e Ciência de Dados.
 
 [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/enuknogueira/)
+
 [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/EnukNogueira)
